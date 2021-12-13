@@ -1,5 +1,12 @@
 import {createConnection, createServer} from "net";
 import fs from 'fs';
+import help from "./help";
+import pwd from "./pwd";
+import cwd from "./cwd";
+import list from "./list";
+import checkPass from "./pass";
+import checkUser from "./checkUser";
+
 
 export function launch(port) {
     const server = createServer((socket) => {
@@ -34,7 +41,7 @@ export function launch(port) {
                     console.log("STOR:", socket.dataSocket);
                     socket.dataSocket.on("data", (data) => {
                         console.log(data.toString());
-                        fs.writeFileSync("./temp.json", data.toString());
+                        fs.writeFileSync("./uploads/temp.json", data.toString());
                         socket.write("220 \r\n");
                     });
                     break;
@@ -71,59 +78,5 @@ export function launch(port) {
     server.listen(port, () => {
         console.log(`server started at localhost:${port}`);
     });
-
-    function checkUser(arg, socket){
-        const users = JSON.parse(fs.readFileSync('./src/user.json', "utf-8"));
-        const user= users.find((user) =>{
-            return user.name === arg;
-        });
-
-        if (user){
-            socket.user = user;
-            return ("331 User exists waiting for pwd");
-        }
-        return("530 User does not exists");
-    }
-
-    function checkPass(arg, socket){
-
-        if (socket.user.password === arg){
-            return ("230 You are connected");
-        }
-        return("530 Password not match");
-    }
-
-    function list() {
-        let files = fs.readdirSync(process.cwd());
-        let finalStr = "status: 150\n";
-        files.forEach((file) => {
-            finalStr += file + '\n';
-        })
-        return (finalStr);
-    }
-
-    function cwd(path) {
-        try {
-            process.chdir(path);
-            return(`250 ${process.cwd()}`);
-        }
-        catch (e) {
-            return(`550 ${e.toString()}`);
-        }
-    }
-
-    function pwd() {
-        return (process.cwd());
-    }
-
-    function help() {
-        const helps = JSON.parse(fs.readFileSync('./src/help.json', "utf-8"));
-        let val = JSON.stringify(helps).split(',');
-        let str = "";
-        val.forEach((line) => {
-            str += line + "\n"
-        })
-        return str;
-    }
 
 }

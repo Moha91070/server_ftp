@@ -1,0 +1,38 @@
+[
+  {
+    "name":"USER" ,
+    "arg": "${checkUser(args[0], socket)}\\r\\n"
+  },
+  {
+    "name":"PASS",
+    "arg": "socket.write(`${checkPass(args[0], socket)}\\r\\n`);"
+  },
+  {
+    "name": "LIST",
+    "arg": "socket.write(`${list()}\\r\\n`);"
+  },
+  {
+    "name": "CWD",
+    "arg": "socket.write(`${cwd(args[0])}\\r\\n`);"
+  },
+  {
+    "name":"FEAT",
+    "arg": "socket.write(\"211 \\r\\n\");"
+  },
+  {
+    "name": "PWD",
+    "arg": "socket.write(`257 ${pwd()}\\r\\n`);"
+  },
+  {
+    "name": "TYPE",
+    "arg": "socket.write(\"200 \\r\\n\");"
+  },
+  {
+    "name": "HELP",
+    "arg": "socket.write(`200 ${help()} \\r\\n`);"
+  },
+  {
+    "name":"QUIT",
+    "arg": "221 Service closing control connection"
+  }
+]

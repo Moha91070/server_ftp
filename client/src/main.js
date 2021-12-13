@@ -1,12 +1,12 @@
 import {createConnection, createServer} from 'net';
 import readline from 'readline';
 import * as fs from "fs";
+import initializeDataServer from "./initialiseDataServer";
 
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
-
 let dataSocket = null;
 
 export function connect(host, port) {
@@ -40,19 +40,6 @@ export function connect(host, port) {
             })
         })
     })
-}
-
-function initializeDataServer(){
-    const server = createServer((socket) => {
-        console.log("new connection.");
-        dataSocket = socket;
-        socket.on("data", (data) => {
-            fs.writeFileSync("./temp.json", data.toString());
-        });
-    });
-    server.listen(4243, () => {
-        console.log(`dataServer started at localhost: 4243`);
-    });
 }
 
 connect("localhost",4242);
